@@ -71,7 +71,8 @@ public class MainUIData extends DataChangeBase implements ProfileChangeListener 
     public static final int TOP_BUTTON_BROWSE_ACCOUNTS = 1;
     public static final int TOP_BUTTON_CHANGE_LANGUAGE = 1 << 1;
     public static final int TOP_BUTTON_SEARCH = 1 << 2;
-    public static final int TOP_BUTTON_DEFAULT = TOP_BUTTON_SEARCH | TOP_BUTTON_BROWSE_ACCOUNTS;
+    // Search lives in the sidebar and accounts in Settings, so the top bar is empty by default
+    public static final int TOP_BUTTON_DEFAULT = 0;
     public static final long UI_TWEAK_ROUNDED_CORNERS = 1;
     public static final long MENU_ITEM_DEFAULT = MENU_ITEM_PIN_TO_SIDEBAR | MENU_ITEM_NOT_INTERESTED | MENU_ITEM_NOT_RECOMMEND_CHANNEL
             | MENU_ITEM_REMOVE_FROM_HISTORY | MENU_ITEM_BLOCK_CHANNEL | MENU_ITEM_MOVE_SECTION_UP | MENU_ITEM_MOVE_SECTION_DOWN

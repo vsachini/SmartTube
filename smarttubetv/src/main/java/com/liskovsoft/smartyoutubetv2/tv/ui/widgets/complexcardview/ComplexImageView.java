@@ -2,9 +2,13 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.widgets.complexcardview;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Outline;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -30,6 +34,9 @@ public class ComplexImageView extends RelativeLayout {
     private ProgressBar mProgressBar;
     private TextView mBadgeText;
     private ViewGroup mProgressContainer;
+    private View mFocusRing;
+    private float mCornerRadius;
+    private float mBadgeCornerRadius;
     private int mPreviewWidth;
     private int mPreviewHeight;
     private Runnable mCreateAndStartPlayer;
@@ -59,6 +66,36 @@ public class ComplexImageView extends RelativeLayout {
         mProgressBar = findViewById(R.id.clip_progress);
         mProgressContainer = findViewById(R.id.clip_info);
         mPreviewContainer = findViewById(R.id.preview_container);
+        mFocusRing = findViewById(R.id.focus_ring);
+        mCornerRadius = getResources().getDimension(R.dimen.card_corner_radius);
+        mBadgeCornerRadius = getResources().getDimension(R.dimen.card_badge_corner_radius);
+
+        enableRoundedCorners();
+    }
+
+    /**
+     * Clips the thumbnail (and preview) to rounded corners
+     */
+    private void enableRoundedCorners() {
+        if (Build.VERSION.SDK_INT < 21) {
+            return;
+        }
+
+        setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), mCornerRadius);
+            }
+        });
+        setClipToOutline(true);
+    }
+
+    public void setFocusRingVisible(boolean visible) {
+        if (mFocusRing == null) {
+            return;
+        }
+
+        mFocusRing.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -109,7 +146,10 @@ public class ComplexImageView extends RelativeLayout {
             return;
         }
 
-        mBadgeText.setBackgroundColor(color);
+        GradientDrawable background = new GradientDrawable();
+        background.setColor(color);
+        background.setCornerRadius(mBadgeCornerRadius);
+        mBadgeText.setBackground(background);
     }
 
     /**

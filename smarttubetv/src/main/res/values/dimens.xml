@@ -7,6 +7,10 @@
     <dimen name="card_height">110dp</dimen>
     <!-- text_badge_image_view.xml, default: 12sp -->
     <dimen name="card_badge_text_size">14sp</dimen>
+    <!-- Rounded thumbnail and its focus outline -->
+    <dimen name="card_corner_radius">8dp</dimen>
+    <dimen name="card_focus_ring_width">3dp</dimen>
+    <dimen name="card_badge_corner_radius">4dp</dimen>
 
     <dimen name="shorts_card_width">120dp</dimen>
     <dimen name="shorts_card_height">200dp</dimen>
@@ -42,6 +46,12 @@
 
     <!-- Margin for items from the right side of search field. -->
     <dimen name="search_bar_right_items_margin">20dp</dimen>
+    <!-- Search bar: pill lines up with the content, mic sits right after it -->
+    <dimen name="search_bar_margin_start">56dp</dimen>
+    <dimen name="search_bar_mic_margin_start">16dp</dimen>
+    <dimen name="search_bar_icon_size">24dp</dimen>
+    <dimen name="search_bar_icon_margin_start">12dp</dimen>
+    <dimen name="search_bar_text_margin_start">12dp</dimen>
 
     <!-- Margin for items from the right side of search field. -->
     <dimen name="search_bar_global_time_margin">120dp</dimen>
@@ -88,6 +98,8 @@
 
     <!-- MOD: Zoom factor of focused sidebar header (default: 1.2) -->
     <!--<item format="float" name="lb_browse_header_select_scale" type="dimen">1.2</item>-->
+    <!-- MOD: sidebar items use a focus pill instead of zoom -->
+    <item format="float" name="lb_browse_header_select_scale" type="dimen">1.0</item>
 
     <!--
     Space between cards. Origin: 8dp More info:
@@ -101,7 +113,21 @@
 
     <!-- Browse headers spacing. Origin: 21dp -->
     <!--<dimen name="lb_browse_headers_vertical_spacing">10dp</dimen>-->
-    <dimen name="browse_headers_vertical_spacing">10dp</dimen>
+    <dimen name="browse_headers_vertical_spacing">4dp</dimen>
+
+    <!-- Sidebar: collapsed icon rail. Label must start past the rail edge to stay hidden. -->
+    <dimen name="lb_browse_rail_width">72dp</dimen>
+    <dimen name="browse_headers_padding_start">12dp</dimen>
+    <!-- Lines the first sidebar item up with the first content row -->
+    <dimen name="browse_headers_padding_top">120dp</dimen>
+    <dimen name="sidebar_item_height">44dp</dimen>
+    <dimen name="sidebar_item_padding_start">12dp</dimen>
+    <dimen name="sidebar_item_margin_end">16dp</dimen>
+    <dimen name="sidebar_item_icon_size">24dp</dimen>
+    <dimen name="sidebar_item_label_margin_start">24dp</dimen>
+    <dimen name="sidebar_item_corner_radius">22dp</dimen>
+    <dimen name="sidebar_item_text_size">18sp</dimen>
+    <dimen name="sidebar_item_min_width">220dp</dimen>
 
     <!-- Vine card widget values -->
     <dimen name="lb_basic_card_main_width">140dp</dimen>

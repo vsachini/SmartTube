@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MOD: search pill. White outline when the text field has focus (container uses addStatesFromChildren). -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/search_bar_background" />
+            <stroke android:width="@dimen/card_focus_ring_width" android:color="@color/card_focus_ring" />
+            <corners android:radius="30dp" />
+            <padding android:left="6dp" android:top="6dp" android:right="6dp" android:bottom="6dp" />
+        </shape>
+    </item>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/search_bar_background" />
+            <corners android:radius="30dp" />
+            <padding android:left="6dp" android:top="6dp" android:right="6dp" android:bottom="6dp" />
+        </shape>
+    </item>
+</selector>

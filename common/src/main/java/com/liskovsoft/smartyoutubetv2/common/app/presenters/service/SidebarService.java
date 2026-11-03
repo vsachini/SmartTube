@@ -26,7 +26,14 @@ public class SidebarService implements ProfileChangeListener {
     private final AppPrefs mPrefs;
     private boolean mIsSettingsSectionEnabled;
     private int mBootSectionId;
+    private int mCompactSidebarVersion;
     private final static int RESERVED_ID = 100;
+    // Sidebar-only sections (not backed by a MediaGroup type).
+    // NOTE: Video.hashCode() maps a section id to |id - 31|, so ids in 9..53 collide with
+    // the built-in sections (0..22) and get dropped as duplicates. Keep these above 62.
+    public final static int SECTION_SEARCH = 70;
+    public final static int SECTION_LIBRARY = 71;
+    private final static int COMPACT_SIDEBAR_VERSION = 2;
 
     private SidebarService(Context context) {
         mContext = context.getApplicationContext();
@@ -236,8 +243,12 @@ public class SidebarService implements ProfileChangeListener {
     }
 
     private void initSections() {
-        mDefaultSections.put(R.string.header_notifications, MediaGroup.TYPE_NOTIFICATIONS);
+        // Main sidebar items go first
         mDefaultSections.put(R.string.header_home, MediaGroup.TYPE_HOME);
+        mDefaultSections.put(R.string.title_search, SECTION_SEARCH);
+        mDefaultSections.put(R.string.header_history, MediaGroup.TYPE_HISTORY);
+        mDefaultSections.put(R.string.header_library, SECTION_LIBRARY);
+        mDefaultSections.put(R.string.header_notifications, MediaGroup.TYPE_NOTIFICATIONS);
         mDefaultSections.put(R.string.header_shorts, MediaGroup.TYPE_SHORTS);
         mDefaultSections.put(R.string.header_trending, MediaGroup.TYPE_TRENDING);
         mDefaultSections.put(R.string.header_kids_home, MediaGroup.TYPE_KIDS_HOME);
@@ -248,7 +259,6 @@ public class SidebarService implements ProfileChangeListener {
         mDefaultSections.put(R.string.header_music, MediaGroup.TYPE_MUSIC);
         mDefaultSections.put(R.string.header_channels, MediaGroup.TYPE_CHANNEL_UPLOADS);
         mDefaultSections.put(R.string.header_subscriptions, MediaGroup.TYPE_SUBSCRIPTIONS);
-        mDefaultSections.put(R.string.header_history, MediaGroup.TYPE_HISTORY);
         mDefaultSections.put(R.string.header_blocked_channels, MediaGroup.TYPE_BLOCKED_CHANNELS);
         mDefaultSections.put(R.string.header_playlists, MediaGroup.TYPE_USER_PLAYLISTS);
         mDefaultSections.put(R.string.my_videos, MediaGroup.TYPE_MY_VIDEOS);
@@ -258,14 +268,34 @@ public class SidebarService implements ProfileChangeListener {
 
     private void initPinnedItems() {
         for (int sectionId : mDefaultSections.values()) {
-            // Hidden sections
-            enableSection(sectionId, !Helpers.equalsAny(sectionId, new int[] {
-                    MediaGroup.TYPE_NOTIFICATIONS,
-                    MediaGroup.TYPE_PLAYBACK_QUEUE,
-                    MediaGroup.TYPE_TRENDING,
-                    MediaGroup.TYPE_BLOCKED_CHANNELS
-            }));
+            // Compact sidebar: everything else lives in Library or can be enabled in settings
+            enableSection(sectionId, isCompactSidebarSection(sectionId));
         }
+    }
+
+    private static boolean isCompactSidebarSection(int sectionId) {
+        return Helpers.equalsAny(sectionId, new int[] {
+                MediaGroup.TYPE_HOME,
+                SECTION_SEARCH,
+                MediaGroup.TYPE_HISTORY,
+                SECTION_LIBRARY,
+                MediaGroup.TYPE_SETTINGS
+        });
+    }
+
+    /**
+     * One-time switch of existing installs to the compact sidebar. Pinned channels and playlists are kept.
+     */
+    private void applyCompactSidebarIfNeeded() {
+        if (mCompactSidebarVersion >= COMPACT_SIDEBAR_VERSION) {
+            return;
+        }
+
+        // Re-add default sections from scratch so they follow the new order
+        Helpers.removeIf(mPinnedItems, item -> item == null || item.sectionId != -1);
+        initPinnedItems();
+        mCompactSidebarVersion = COMPACT_SIDEBAR_VERSION;
+        persistState();
     }
 
     private void cleanupPinnedItems() {
@@ -295,6 +325,7 @@ public class SidebarService implements ProfileChangeListener {
         mPinnedItems = Helpers.parseList(split, 0, Video::fromString);
         mBootSectionId = Helpers.parseInt(split, 1, MediaGroup.TYPE_HOME);
         mIsSettingsSectionEnabled = Helpers.parseBoolean(split, 2, true);
+        mCompactSidebarVersion = Helpers.parseInt(split, 3, 0);
 
         transferOldPinnedItems();
 
@@ -306,6 +337,8 @@ public class SidebarService implements ProfileChangeListener {
         enableSection(MediaGroup.TYPE_SETTINGS, true);
 
         cleanupPinnedItems();
+
+        applyCompactSidebarIfNeeded();
     }
 
     private void transferOldPinnedItems() {
@@ -321,7 +354,7 @@ public class SidebarService implements ProfileChangeListener {
     }
 
     public void persistState() {
-        mPrefs.setSidebarData(Helpers.mergeData(mPinnedItems, mBootSectionId, mIsSettingsSectionEnabled));
+        mPrefs.setSidebarData(Helpers.mergeData(mPinnedItems, mBootSectionId, mIsSettingsSectionEnabled, mCompactSidebarVersion));
     }
 
     @Override

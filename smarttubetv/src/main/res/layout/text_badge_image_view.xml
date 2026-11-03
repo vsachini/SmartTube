@@ -35,6 +35,7 @@
                   android:ellipsize="end"
                   android:includeFontPadding="false"
                   android:layout_gravity="end"
+                  android:layout_marginBottom="@dimen/lb_basic_card_info_badge_margin"
                   android:paddingStart="@dimen/lb_details_description_title_padding_adjust_bottom"
                   android:paddingEnd="@dimen/lb_details_description_title_padding_adjust_bottom"
                   android:textSize="@dimen/card_badge_text_size"
@@ -47,4 +48,15 @@
             android:max="100"
             android:progress="45"/>
     </LinearLayout>
+    <View
+        android:id="@+id/focus_ring"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/main_image"
+        android:layout_alignBottom="@id/main_image"
+        android:layout_alignLeft="@id/main_image"
+        android:layout_alignRight="@id/main_image"
+        android:background="@drawable/card_focus_ring"
+        tools:ignore="RtlHardcoded" />
 </merge>

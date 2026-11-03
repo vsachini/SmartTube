@@ -30,6 +30,7 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.errors.ErrorFragmentData
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.BrowsePresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.SearchPresenter;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.SplashPresenter;
+import com.liskovsoft.smartyoutubetv2.common.app.presenters.service.SidebarService;
 import com.liskovsoft.smartyoutubetv2.common.app.views.BrowseView;
 import com.liskovsoft.smartyoutubetv2.common.misc.CrashRestorer;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
@@ -127,6 +128,12 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
                 (viewHolder, row) -> {
                     long headerId = row.getHeaderItem().getId();
                     int newPosition = indexOf(headerId);
+
+                    if (headerId == SidebarService.SECTION_SEARCH) {
+                        // Search is a sidebar shortcut to the search screen
+                        SearchPresenter.instance(getContext()).startSearch(null);
+                        return;
+                    }
 
                     if (getHeadersSupportFragment().getSelectedPosition() != newPosition) {
                         // touch screen support

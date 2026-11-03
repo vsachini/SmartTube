@@ -1,10 +1,16 @@
 package com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.headers;
 
+import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnLayoutChangeListener;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.leanback.app.HeadersSupportFragment;
 import androidx.leanback.widget.ItemBridgeAdapter;
+import androidx.leanback.widget.OnChildViewHolderSelectedListener;
+import androidx.leanback.widget.VerticalGridView;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.leanback.widget.Row;
 import androidx.leanback.widget.RowHeaderPresenter;
 import com.liskovsoft.sharedutils.helpers.Helpers;
@@ -83,5 +89,60 @@ public class ExtendedHeadersSupportFragment extends HeadersSupportFragment {
                     }
                 }
 
+                @Override
+                public void onAttachedToWindow(ItemBridgeAdapter.ViewHolder viewHolder) {
+                    // NEW CODE: mark the current section in the rail
+                    updateActivated(viewHolder.itemView, viewHolder.getAdapterPosition());
+                }
             };
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getVerticalGridView() != null) {
+            getVerticalGridView().addOnChildViewHolderSelectedListener(new OnChildViewHolderSelectedListener() {
+                @Override
+                public void onChildViewHolderSelected(RecyclerView parent, RecyclerView.ViewHolder child, int position, int subposition) {
+                    updateActivatedChildren();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void setAlignment(int windowAlignOffsetTop) {
+        super.setAlignment(windowAlignOffsetTop);
+
+        // NEW CODE: keep the short sidebar list in place instead of scrolling the selection to a fixed line
+        if (getVerticalGridView() != null) {
+            getVerticalGridView().setWindowAlignment(VerticalGridView.WINDOW_ALIGN_BOTH_EDGE);
+        }
+    }
+
+    /**
+     * The selected header is the current section even when the sidebar is collapsed
+     */
+    private void updateActivatedChildren() {
+        VerticalGridView gridView = getVerticalGridView();
+
+        if (gridView == null) {
+            return;
+        }
+
+        for (int i = 0; i < gridView.getChildCount(); i++) {
+            View child = gridView.getChildAt(i);
+            updateActivated(child, gridView.getChildAdapterPosition(child));
+        }
+    }
+
+    private void updateActivated(View itemView, int position) {
+        VerticalGridView gridView = getVerticalGridView();
+
+        if (gridView == null || itemView == null) {
+            return;
+        }
+
+        itemView.setActivated(position != RecyclerView.NO_POSITION && position == gridView.getSelectedPosition());
+    }
 }

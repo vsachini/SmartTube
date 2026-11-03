@@ -725,6 +725,9 @@ public class BrowseSupportFragment extends BaseSupportFragment {
     boolean mCanShowHeaders = true;
     private int mContainerListMarginStart;
     private int mContainerListAlignTop;
+    // MOD: width of the collapsed sidebar (icon rail). Zero keeps the original hide/show behavior.
+    private int mRailWidth;
+    private int mHeadersWidth;
     private boolean mMainFragmentScaleEnabled = true;
     OnItemViewSelectedListener mExternalOnItemViewSelectedListener;
     private OnItemViewClickedListener mOnItemViewClickedListener;
@@ -1189,6 +1192,8 @@ public class BrowseSupportFragment extends BaseSupportFragment {
                 R.styleable.LeanbackTheme_browseRowsMarginTop, context.getResources()
                 .getDimensionPixelSize(R.dimen.lb_browse_rows_margin_top));
         ta.recycle();
+        mRailWidth = context.getResources().getDimensionPixelSize(R.dimen.lb_browse_rail_width);
+        mHeadersWidth = context.getResources().getDimensionPixelSize(R.dimen.lb_browse_headers_width);
 
         readArguments(getArguments());
 
@@ -1279,6 +1284,7 @@ public class BrowseSupportFragment extends BaseSupportFragment {
         }
 
         mHeadersSupportFragment.setHeadersGone(!mCanShowHeaders);
+        mHeadersSupportFragment.setAlwaysShowChildren(isRailEnabled());
         if (mHeaderPresenterSelector != null) {
             mHeadersSupportFragment.setPresenterSelector(mHeaderPresenterSelector);
         }
@@ -1451,8 +1457,23 @@ public class BrowseSupportFragment extends BaseSupportFragment {
         View containerList;
         containerList = mHeadersSupportFragment.getView();
         lp = (MarginLayoutParams) containerList.getLayoutParams();
-        lp.setMarginStart(onScreen ? 0 : -mContainerListMarginStart);
+        if (isRailEnabled()) {
+            // MOD: keep the headers on screen, collapsed to an icon rail that clips the labels
+            lp.setMarginStart(0);
+            // Fixed width: with wrap_content the root stretches to the screen edge (fade edge is aligned to its end)
+            lp.width = onScreen ? mHeadersWidth : mRailWidth;
+        } else {
+            lp.setMarginStart(onScreen ? 0 : -mContainerListMarginStart);
+        }
         containerList.setLayoutParams(lp);
+    }
+
+    /**
+     * MOD: sidebar collapses to an icon rail instead of hiding.
+     * The expanded sidebar overlays the content instead of pushing it.
+     */
+    boolean isRailEnabled() {
+        return mRailWidth > 0;
     }
 
     void showHeaders(boolean show) {
@@ -1464,9 +1485,14 @@ public class BrowseSupportFragment extends BaseSupportFragment {
 
     private void expandMainFragment(boolean expand) {
         MarginLayoutParams params = (MarginLayoutParams) mScaleFrameLayout.getLayoutParams();
-        params.setMarginStart(!expand ? mContainerListMarginStart : 0);
+        if (isRailEnabled()) {
+            params.setMarginStart(mRailWidth);
+        } else {
+            params.setMarginStart(!expand ? mContainerListMarginStart : 0);
+        }
         mScaleFrameLayout.setLayoutParams(params);
-        mMainFragmentAdapter.setExpand(expand);
+        // MOD: the rail overlays the content, so the content keeps its full-width layout
+        mMainFragmentAdapter.setExpand(isRailEnabled() || expand);
 
         setMainFragmentAlignment();
         final float scaleFactor = !expand

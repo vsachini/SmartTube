@@ -22,7 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/lb_search_bar_speech_orb_margin_start"
+            android:layout_toEndOf="@+id/lb_search_bar_items"
+            android:layout_marginStart="@dimen/search_bar_mic_margin_start"
             android:focusable="true"
             android:focusableInTouchMode="false"
             >
@@ -35,12 +36,13 @@
             android:id="@+id/lb_search_bar_items"
             android:layout_width="@dimen/lb_search_bar_items_width"
             android:layout_height="@dimen/lb_search_bar_items_height"
-            android:layout_toEndOf="@+id/lb_search_bar_speech_orb"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/lb_search_bar_items_margin_start"
+            android:layout_marginStart="@dimen/search_bar_margin_start"
             android:layout_marginTop="@dimen/lb_search_bar_inner_margin_top"
             android:layout_marginBottom="@dimen/lb_search_bar_inner_margin_bottom"
-            android:background="@drawable/rounded_search_bg"
+            android:background="@drawable/search_bar_background"
+            android:addStatesFromChildren="true"
             >
 
         <ImageView
@@ -54,15 +56,25 @@
                 android:visibility="gone"
                 style="?attr/browseTitleIconStyle"/>
 
+        <ImageView
+                android:id="@+id/search_bar_icon"
+                android:layout_width="@dimen/search_bar_icon_size"
+                android:layout_height="@dimen/search_bar_icon_size"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/lb_search_bar_badge"
+                android:layout_marginStart="@dimen/search_bar_icon_margin_start"
+                android:src="@drawable/icon_search"
+                android:tint="@color/search_bar_icon"
+                android:contentDescription="@null"/>
         <androidx.leanback.widget.SearchEditText
                     android:id="@+id/lb_search_text_editor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|start"
-                    android:layout_marginStart="@dimen/lb_search_bar_edit_text_margin_start"
+                    android:layout_marginStart="@dimen/search_bar_text_margin_start"
                     android:layout_centerVertical="true"
                     android:cursorVisible="true"
-                    android:layout_toEndOf="@+id/lb_search_bar_badge"
+                    android:layout_toEndOf="@+id/search_bar_icon"
                     android:editable="true"
                     android:background="@null"
                     android:fontFamily="sans-serif"

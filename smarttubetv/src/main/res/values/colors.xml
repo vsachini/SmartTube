@@ -22,6 +22,19 @@
     <color name="card_default_background">#0096a6</color>
     <color name="card_default_background_dark">#004B53</color>
     <color name="card_default_text">#FFFFFF</color>
+    <!-- Text under the thumbnail -->
+    <color name="card_title_text">#C9CAD0</color>
+    <color name="card_title_text_selected">#FFFFFF</color>
+    <color name="card_content_text">#9A9BA1</color>
+    <color name="card_focus_ring">#FFFFFF</color>
+    <color name="card_badge_background">#B3000000</color>
+
+    <!-- Sidebar items -->
+    <color name="sidebar_item_content">#8A8B92</color>
+    <color name="sidebar_item_focused_background">#F2F2F3</color>
+    <color name="sidebar_item_focused_content">#111111</color>
+    <color name="sidebar_item_active_icon">#E24B4A</color>
+    <color name="sidebar_item_active_text">#FFFFFF</color>
 
     <!-- Browse fragment colors -->
     <color name="shelf_background">#282828</color>
@@ -60,8 +73,16 @@
     <color name="foreground_material_light_mod">@android:color/black</color>
 
     <!-- Default Orb buttons colors: search, accounts, search settings etc -->
-    <color name="orb_color">@color/grey</color>
-    <color name="orb_bright_color">@color/grey</color>
+    <color name="orb_color">#2A2B30</color>
+    <color name="orb_bright_color">#4A4B52</color>
+    <!-- Search icon inside the search pill -->
+    <color name="search_bar_icon">#8A8B92</color>
+    <color name="search_bar_background">#2A2B30</color>
+    <!-- MOD: the pill stays dark, so text stays light in every mode -->
+    <color name="lb_search_bar_text">#FFEEEEEE</color>
+    <color name="lb_search_bar_text_speech_mode">#FFEEEEEE</color>
+    <color name="lb_search_bar_hint">#FF8A8B92</color>
+    <color name="lb_search_bar_hint_speech_mode">#FF8A8B92</color>
     <color name="orb_icon_color">@color/white</color>
 
     <!-- Search page mic button color -->

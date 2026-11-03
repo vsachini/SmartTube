@@ -94,6 +94,8 @@ public class ComplexImageCardView extends ImageCardView {
     public void setSelected(boolean selected) {
         super.setSelected(selected);
 
+        mComplexImageView.setFocusRingVisible(selected);
+
         if (mIsCardTextAutoScrollEnabled) {
             enableTitleAnimation(selected);
             enableContentAnimation(selected);
@@ -139,8 +141,8 @@ public class ComplexImageCardView extends ImageCardView {
             return;
         }
 
+        // Only cap the lines so the subtitle sits right under a short title
         titleView.setMaxLines(lines);
-        titleView.setLines(lines);
     }
 
     public void setContentLinesNum(int lines) {

@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- MOD: sidebar item. Icon stays visible in the collapsed rail, label shows when expanded. -->
 <androidx.leanback.widget.NonOverlappingLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/sidebar_item_height"
+    android:layout_marginEnd="@dimen/sidebar_item_margin_end"
+    android:paddingStart="@dimen/sidebar_item_padding_start"
+    android:paddingEnd="@dimen/sidebar_item_padding_start"
+    android:gravity="center_vertical"
+    android:background="@drawable/sidebar_item_background"
+    android:minWidth="@dimen/sidebar_item_min_width"
     android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/header_icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="@dimen/sidebar_item_icon_size"
+        android:layout_height="@dimen/sidebar_item_icon_size"
+        android:duplicateParentState="true"
         android:contentDescription="@string/header_icon" />
 
     <com.liskovsoft.smartyoutubetv2.tv.ui.widgets.marqueetextviewcompat.HeaderMarqueeTextViewCompat
         android:id="@+id/header_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="@dimen/sidebar_item_label_margin_start"
+        android:duplicateParentState="true"
 
         android:singleLine="true"
         android:maxWidth="150sp"
@@ -24,5 +32,7 @@
         android:ellipsize="marquee"
         android:scrollHorizontally="true"
 
-        style="@style/TextAppearance.Leanback.Header"/>
+        style="@style/TextAppearance.Leanback.Header"
+        android:textSize="@dimen/sidebar_item_text_size"
+        android:textColor="@color/sidebar_item_text"/>
 </androidx.leanback.widget.NonOverlappingLinearLayout>

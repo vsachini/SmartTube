@@ -82,6 +82,7 @@ public class HeadersSupportFragment extends BaseRowSupportFragment {
     private OnHeaderViewSelectedListener mOnHeaderViewSelectedListener;
     OnHeaderClickedListener mOnHeaderClickedListener;
     private boolean mHeadersEnabled = true;
+    private boolean mAlwaysShowChildren;
     private boolean mHeadersGone = false;
     private int mBackgroundColor;
     private boolean mBackgroundColorSet;
@@ -186,13 +187,22 @@ public class HeadersSupportFragment extends BaseRowSupportFragment {
         if (listView != null) {
             getView().setVisibility(mHeadersGone ? View.GONE : View.VISIBLE);
             if (!mHeadersGone) {
-                if (mHeadersEnabled) {
+                // MOD: the collapsed sidebar stays visible as an icon rail
+                if (mHeadersEnabled || mAlwaysShowChildren) {
                     listView.setChildrenVisibility(View.VISIBLE);
                 } else {
                     listView.setChildrenVisibility(View.INVISIBLE);
                 }
             }
         }
+    }
+
+    /**
+     * MOD: keep header items visible while the sidebar is collapsed (icon rail)
+     */
+    public void setAlwaysShowChildren(boolean alwaysShow) {
+        mAlwaysShowChildren = alwaysShow;
+        updateListViewVisibility();
     }
 
     void setHeadersEnabled(boolean enabled) {
