@@ -70,6 +70,8 @@ public abstract class MaxControlsVideoPlayerGlue<T extends PlayerAdapter>
                     private void fixClippedTitle(ViewHolder viewHolder) {
                         // Fix clipped title on videos with embedded icons
                         Helpers.setField(viewHolder, "mTitleMargin", 0);
+                        // Minimal player: single-line title
+                        Helpers.setField(viewHolder, "mTitleMaxLines", 1);
                     }
 
                     /**

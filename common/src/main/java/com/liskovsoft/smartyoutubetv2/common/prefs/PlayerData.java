@@ -29,6 +29,7 @@ import java.util.Map;
 
 public class PlayerData extends DataChangeBase implements PlayerConstants, ProfileChangeListener {
     private static final String VIDEO_PLAYER_DATA = "video_player_data";
+    private static final int MINIMAL_PLAYER_VERSION = 1;
     public static final int OK_ONLY_UI = 0;
     public static final int OK_UI_AND_PAUSE = 1;
     public static final int OK_ONLY_PAUSE = 2;
@@ -75,6 +76,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
     private int mPlaybackMode;
     private float mSleepTimerHours;
     private boolean mIsQualityInfoEnabled;
+    private int mMinimalPlayerVersion;
     private boolean mIsSpeedPerVideoEnabled;
     private boolean mIsTimeCorrectionEnabled;
     private boolean mIsGlobalEndingTimeEnabled;
@@ -790,8 +792,8 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
         // mIsAbsoluteDateEnabled
         mSeekPreviewMode = Helpers.parseInt(split, 3, SEEK_PREVIEW_SINGLE);
         mIsSeekConfirmPauseEnabled = Helpers.parseBoolean(split, 4, false);
-        mIsClockEnabled = Helpers.parseBoolean(split, 5, true);
-        mIsRemainingTimeEnabled = Helpers.parseBoolean(split, 6, true);
+        mIsClockEnabled = Helpers.parseBoolean(split, 5, false);
+        mIsRemainingTimeEnabled = Helpers.parseBoolean(split, 6, false);
         mBackgroundMode = Helpers.parseInt(split, 7, PlayerEngine.BACKGROUND_MODE_DEFAULT);
         // afrData was there
         mVideoFormat = Helpers.firstNonNull(ExoFormatItem.from(Helpers.parseStr(split, 9)), getDefaultVideoFormat());
@@ -812,7 +814,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
         mIsLegacyCodecsForced = Helpers.parseBoolean(split, 24, false);
         mSleepTimerHours = Helpers.parseFloat(split, 25, 0);
         // old player tweaks
-        mIsQualityInfoEnabled = Helpers.parseBoolean(split, 28, true);
+        mIsQualityInfoEnabled = Helpers.parseBoolean(split, 28, false);
         mIsSpeedPerVideoEnabled = Helpers.parseBoolean(split, 29, false);
         mAspectRatio = Helpers.parseFloat(split, 30, PlayerEngine.ASPECT_RATIO_DEFAULT);
         mIsGlobalClockEnabled = Helpers.parseBoolean(split, 31, false);
@@ -847,6 +849,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
         mLastAudioLanguages = Helpers.parseStrList(split, 60);
         mIsVideoFlipEnabled = Helpers.parseBoolean(split, 61, false);
         mIsAudioDelayEnabled = Helpers.parseBoolean(split, 62, false);
+        mMinimalPlayerVersion = Helpers.parseInt(split, 63, 0);
 
         if (speeds != null) {
             for (String speedSpec : speeds) {
@@ -861,6 +864,15 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
 
         if (mSubtitleStyleIndex >= mSubtitleStyles.size()) {
             mSubtitleStyleIndex = yellowOnSemiBgSubIdx;
+        }
+
+        // One-time switch of existing installs to the minimal player: no clock, remaining time or quality info
+        if (mMinimalPlayerVersion < MINIMAL_PLAYER_VERSION) {
+            mIsClockEnabled = false;
+            mIsRemainingTimeEnabled = false;
+            mIsQualityInfoEnabled = false;
+            mMinimalPlayerVersion = MINIMAL_PLAYER_VERSION;
+            persistState();
         }
     }
 
@@ -884,7 +896,7 @@ public class PlayerData extends DataChangeBase implements PlayerConstants, Profi
                 mIsNumberKeySeekEnabled, mIsSkip24RateEnabled, mAfrPauseMs, mIsLiveChatEnabled, mLastSubtitleFormats, mLastSpeed, mRotationAngle,
                 mZoomPercents, mPlaybackMode, mAudioLanguage, mSubtitleLanguage, mEnabledSubtitlesPerChannel, mIsSubtitlesPerChannelEnabled,
                 mIsSpeedPerChannelEnabled, Helpers.mergeArray(mSpeeds.values().toArray()), mPitch, mIsSkipShortsEnabled, mLastAudioLanguages,
-                mIsVideoFlipEnabled, mIsAudioDelayEnabled
+                mIsVideoFlipEnabled, mIsAudioDelayEnabled, mMinimalPlayerVersion
         ));
     }
 
