@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Lumen mark for the intro: dark rounded tile with the red play button (sparkle is separate, see intro_sparkle) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="160dp"
+    android:height="160dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+    <path
+        android:fillColor="#222329"
+        android:pathData="M27,5 L73,5 A22,22 0 0 1 95,27 L95,73 A22,22 0 0 1 73,95 L27,95 A22,22 0 0 1 5,73 L5,27 A22,22 0 0 1 27,5 Z" />
+    <path
+        android:fillColor="#E24B4A"
+        android:strokeColor="#E24B4A"
+        android:strokeWidth="8"
+        android:strokeLineJoin="round"
+        android:pathData="M39,36 L39,64 L64,50 Z" />
+</vector>

@@ -19,7 +19,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground"
+    android:background="@drawable/preference_item_background"
     android:clickable="true"
     android:focusable="true"
     android:descendantFocusability="blocksDescendants"
@@ -29,19 +29,19 @@
 
     <!-- MOD: move check box to the beginning (consistent look with the multi item dialogue) -->
     <!-- Preference should place its actual preference widget here. -->
-    <LinearLayout android:id="@android:id/widget_frame"
+    <LinearLayout android:duplicateParentState="true" android:id="@android:id/widget_frame"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/lb_preference_item_icon_margin_end"
         android:gravity="center_vertical"
         android:orientation="vertical" />
 
-    <FrameLayout
+    <FrameLayout android:duplicateParentState="true"
         android:id="@+id/icon_frame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical" >
-        <ImageView
+        <ImageView android:duplicateParentState="true"
             android:id="@android:id/icon"
             android:layout_width="@dimen/lb_preference_item_icon_size"
             android:layout_height="@dimen/lb_preference_item_icon_size"
@@ -49,24 +49,24 @@
             />
     </FrameLayout>
 
-    <LinearLayout android:layout_width="0dp"
+    <LinearLayout android:duplicateParentState="true" android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
         <Space android:layout_width="0dp" android:layout_height="@dimen/lb_preference_item_text_space_top" />
-        <TextView
+        <TextView android:duplicateParentState="true"
             android:id="@android:id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/lb_preference_item_primary_text_margin_bottom"
-            android:fontFamily="sans-serif"
+            android:fontFamily="@font/lumen_sans"
             android:textColor="@color/lb_preference_item_primary_text_color"
             android:textSize="@dimen/lb_preference_item_primary_text_size"/>
-        <TextView
+        <TextView android:duplicateParentState="true"
             android:id="@android:id/summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-condensed"
+            android:fontFamily="@font/lumen_sans"
             android:textColor="@color/lb_preference_item_secondary_text_color"
             android:textSize="@dimen/lb_preference_item_secondary_text_size"
             android:maxLines="4" />

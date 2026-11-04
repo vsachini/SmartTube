@@ -126,6 +126,10 @@ public class ComplexImageCardView extends ImageCardView {
         }
     }
 
+    public void setGlowColor(int color) {
+        mComplexImageView.setGlowColor(color);
+    }
+
     public void setPreview(Video video) {
         mComplexImageView.setPreview(video);
     }

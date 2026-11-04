@@ -3,6 +3,8 @@ package com.liskovsoft.smartyoutubetv2.tv.util;
 import android.content.Context;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Outline;
+import android.os.Build;
 import android.os.Build.VERSION;
 import android.text.Layout;
 import android.text.TextUtils.TruncateAt;
@@ -280,5 +282,22 @@ public class ViewUtil {
         // 3. Add fixed internal padding to create a "safe zone" for both Latin and Japanese text
         int paddingExtra = (int) (4 * textView.getResources().getDisplayMetrics().density);
         textView.setPadding(textView.getPaddingLeft(), paddingExtra, textView.getPaddingRight(), paddingExtra);
+    }
+
+    /**
+     * Clips the view to rounded corners (API 21+)
+     */
+    public static void setRoundedCorners(View view, float radius) {
+        if (view == null || Build.VERSION.SDK_INT < 21) {
+            return;
+        }
+
+        view.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View v, Outline outline) {
+                outline.setRoundRect(0, 0, v.getWidth(), v.getHeight(), radius);
+            }
+        });
+        view.setClipToOutline(true);
     }
 }

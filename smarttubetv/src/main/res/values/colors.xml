@@ -28,6 +28,17 @@
     <color name="card_content_text">#9A9BA1</color>
     <color name="card_focus_ring">#FFFFFF</color>
     <color name="card_badge_background">#B3000000</color>
+    <color name="card_hero_placeholder">#1E1F24</color>
+    <color name="intro_background">#0E0F12</color>
+    <!-- Loading placeholders -->
+    <color name="skeleton_base">#1F2026</color>
+    <color name="skeleton_highlight">#26FFFFFF</color>
+
+    <!-- Ambient backdrop: darkens the blurred thumbnail behind the content -->
+    <color name="ambient_scrim">#B3000000</color>
+
+    <!-- MOD: settings and menu panels are slightly translucent -->
+    <color name="lb_preference_decor_list_background">#E617181C</color>
 
     <!-- Sidebar items -->
     <color name="sidebar_item_content">#8A8B92</color>

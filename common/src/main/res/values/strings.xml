@@ -5,6 +5,9 @@
     <string name="header_subscriptions">Subscriptions</string>
     <string name="header_history">History</string>
     <string name="header_library">Library</string>
+    <string name="hero_play">▶  Play</string>
+    <string name="up_next">Up next</string>
+    <string name="app_name_short" translatable="false">Lumen TV</string>
     <string name="header_music">Music</string>
     <string name="header_news">News</string>
     <string name="header_gaming">Gaming</string>

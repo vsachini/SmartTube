@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.leanback.app.BrowseSupportFragment;
@@ -48,6 +49,7 @@ import java.util.Map;
  */
 public class BrowseFragment extends BrowseSupportFragment implements BrowseView {
     private static final String TAG = BrowseFragment.class.getSimpleName();
+    private static final int SIDEBAR_ALPHA = 0xD0;
     private ArrayObjectAdapter mSectionRowAdapter;
     private BrowsePresenter mBrowsePresenter;
     private Map<Integer, BrowseSection> mSections;
@@ -74,6 +76,7 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
         mBrowsePresenter = BrowsePresenter.instance(getContext());
         mBrowsePresenter.setView(this);
         mProgressBarManager = new ProgressBarManager();
+        mProgressBarManager.setSkeletonCondition(this::isEmpty);
 
         setupAdapter();
         setupFragmentFactory();
@@ -204,7 +207,8 @@ public class BrowseFragment extends BrowseSupportFragment implements BrowseView 
         //setTitle(getString(R.string.browse_title));
 
         // Set fastLane (or headers) background color
-        setBrandColor(ContextCompat.getColor(getContext(), brandColorRes));
+        // MOD: slightly translucent (frosted glass over the ambient backdrop and blurred content)
+        setBrandColor(ColorUtils.setAlphaComponent(ContextCompat.getColor(getContext(), brandColorRes), SIDEBAR_ALPHA));
 
         // Set search icon color.
         setSearchAffordanceColor(ContextCompat.getColor(getContext(), brandAccentColorRes));

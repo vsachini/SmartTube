@@ -101,6 +101,60 @@
                  android:layout_gravity="top|right"
                  android:background="#70000000"/>
 
+    <!-- MOD: "Up next" card, shown near the end of the video while controls are hidden -->
+    <LinearLayout
+        android:id="@+id/up_next_card"
+        android:layout_width="@dimen/up_next_card_width"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/up_next_card_margin"
+        android:background="@drawable/up_next_background"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/up_next_image"
+            android:layout_width="@dimen/up_next_thumb_width"
+            android:layout_height="@dimen/up_next_thumb_height"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null"/>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/up_next"
+                android:textAllCaps="true"
+                android:letterSpacing="0.08"
+                android:fontFamily="@font/lumen_display"
+                android:textColor="@color/sidebar_item_active_icon"
+                android:textSize="12sp"/>
+            <TextView
+                android:id="@+id/up_next_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:fontFamily="@font/lumen_sans"
+                android:textColor="@color/card_title_text_selected"
+                android:textSize="15sp"/>
+            <TextView
+                android:id="@+id/up_next_channel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:fontFamily="@font/lumen_sans"
+                android:textColor="@color/card_content_text"
+                android:textSize="13sp"/>
+        </LinearLayout>
+    </LinearLayout>
     <ViewStub
         android:id="@+id/youtube_overlay_stub"
         android:layout_width="match_parent"

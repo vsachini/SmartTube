@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MOD: settings rows get the white focus pill used across the app -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <inset android:insetLeft="10dp" android:insetRight="10dp" android:insetTop="2dp" android:insetBottom="2dp">
+            <shape android:shape="rectangle">
+                <solid android:color="@color/sidebar_item_focused_background" />
+                <corners android:radius="12dp" />
+            </shape>
+        </inset>
+    </item>
+    <item android:drawable="@android:color/transparent" />
+</selector>

@@ -17,10 +17,13 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.mod.leanback.playerglue.seekpreview
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Outline;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import androidx.annotation.RestrictTo;
@@ -275,6 +278,17 @@ public class ThumbsBar extends LinearLayout {
     protected View createThumbView(ViewGroup parent) {
         ImageView imageView = new ImageView(parent.getContext());
         imageView.setAdjustViewBounds(true); // MOD: fit width
+        // MOD: rounded seek preview thumbnails
+        if (Build.VERSION.SDK_INT >= 21) {
+            float radius = parent.getResources().getDimension(com.liskovsoft.smartyoutubetv2.tv.R.dimen.card_corner_radius);
+            imageView.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), radius);
+                }
+            });
+            imageView.setClipToOutline(true);
+        }
         if (mRotation > 0) {
             imageView.setRotation((float) mRotation);
         }

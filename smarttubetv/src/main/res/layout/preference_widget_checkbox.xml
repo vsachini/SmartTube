@@ -27,4 +27,6 @@
     android:layout_marginStart="-7dp"
     android:focusable="false"
     android:clickable="false"
-    android:background="@null"/>
+    android:background="@null"
+    android:buttonTint="@color/preference_checkbox_tint"
+    android:duplicateParentState="true"/>

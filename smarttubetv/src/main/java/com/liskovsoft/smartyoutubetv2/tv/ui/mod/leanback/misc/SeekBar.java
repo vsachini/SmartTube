@@ -85,6 +85,7 @@ public final class SeekBar extends View {
     private int mActiveRadius;
     private int mBarHeight;
     private int mActiveBarHeight;
+    private int mKnobGlowRadius;
     private final List<SeekBarRectangle> mSeekBarRectangles = new ArrayList<>();
 
     private AccessibilitySeekListener mAccessibilitySeekListener;
@@ -92,8 +93,10 @@ public final class SeekBar extends View {
     public SeekBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
-        mBackgroundPaint.setColor(Color.GRAY);
-        mSecondProgressPaint.setColor(Color.LTGRAY);
+        // MOD: translucent track, glowing knob
+        mBackgroundPaint.setColor(0x40FFFFFF);
+        mSecondProgressPaint.setColor(0x66FFFFFF);
+        mKnobGlowRadius = context.getResources().getDimensionPixelSize(com.liskovsoft.smartyoutubetv2.tv.R.dimen.seek_bar_knob_glow_radius);
         mProgressPaint.setColor(Color.RED);
         mKnobPaint.setColor(Color.WHITE);
         mBarHeight = context.getResources().getDimensionPixelSize(
@@ -156,6 +159,12 @@ public final class SeekBar extends View {
             canvas.drawRoundRect(rectangle.rect, radius, radius, rectangle.paint);
         }
 
+        // MOD: the knob glows in the progress colour while seeking
+        if (isFocused()) {
+            mKnobPaint.setShadowLayer(mKnobGlowRadius, 0, 0, mProgressPaint.getColor());
+        } else {
+            mKnobPaint.clearShadowLayer();
+        }
         canvas.drawCircle(mKnobx, getHeight() / 2, radius, mKnobPaint);
     }
 

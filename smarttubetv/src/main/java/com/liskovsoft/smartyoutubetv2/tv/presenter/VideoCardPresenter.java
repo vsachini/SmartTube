@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build.VERSION;
 import android.util.Pair;
@@ -145,6 +146,7 @@ public class VideoCardPresenter extends LongClickPresenter {
         }
 
         cardView.setMainImageDimensions(mWidth, mHeight);
+        cardView.setGlowColor(Color.WHITE); // until the thumbnail is loaded
 
         if (context instanceof Activity && ((Activity) context).isDestroyed()) {
             // Glide.with(context): IllegalArgumentException: You cannot start a load for a destroyed activity
@@ -162,6 +164,7 @@ public class VideoCardPresenter extends LongClickPresenter {
                 // Cache makes app crashing on old android versions
                 .diskCacheStrategy(VERSION.SDK_INT > 21 ? DiskCacheStrategy.ALL : DiskCacheStrategy.NONE)
                 .listener(mErrorListener)
+                .addListener(new GlowColorListener(cardView))
                 .error(
                     // Updated thumbnail url not found
                     Glide.with(context)
@@ -247,6 +250,50 @@ public class VideoCardPresenter extends LongClickPresenter {
             return false;
         }
     };
+
+    /**
+     * Picks the focus glow colour from the loaded thumbnail
+     */
+    private static class GlowColorListener implements RequestListener<Drawable> {
+        private final ComplexImageCardView mCardView;
+
+        GlowColorListener(ComplexImageCardView cardView) {
+            mCardView = cardView;
+        }
+
+        @Override
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+            if (resource instanceof BitmapDrawable) {
+                mCardView.setGlowColor(getGlowColor(((BitmapDrawable) resource).getBitmap()));
+            }
+            return false;
+        }
+    }
+
+    /**
+     * Average colour of the image, made vivid and bright enough to read as light
+     */
+    static int getGlowColor(Bitmap bitmap) {
+        try {
+            if (VERSION.SDK_INT >= 26 && bitmap.getConfig() == Bitmap.Config.HARDWARE) {
+                bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+            }
+
+            int color = Bitmap.createScaledBitmap(bitmap, 1, 1, true).getPixel(0, 0);
+            float[] hsv = new float[3];
+            Color.colorToHSV(color, hsv);
+            hsv[1] = Math.max(hsv[1], 0.55f);
+            hsv[2] = Math.max(hsv[2], 0.9f);
+            return Color.HSVToColor(hsv);
+        } catch (RuntimeException e) {
+            return Color.WHITE;
+        }
+    }
 
     private final RequestListener<Bitmap> mErrorListener2 = new RequestListener<Bitmap>() {
         @Override

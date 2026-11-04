@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
+import android.view.animation.OvershootInterpolator;
 
 import androidx.leanback.R;
 import androidx.leanback.app.HeadersFragment;
@@ -66,12 +67,16 @@ public class FocusHighlightHelper {
         private float mFocusLevelStart;
         private float mFocusLevelDelta;
         private final TimeAnimator mAnimator = new TimeAnimator();
-        private final Interpolator mInterpolator = new AccelerateDecelerateInterpolator();
+        // MOD: springy zoom in (slight overshoot), smooth zoom out
+        private final Interpolator mFocusInInterpolator = new OvershootInterpolator(1.6f);
+        private final Interpolator mFocusOutInterpolator = new AccelerateDecelerateInterpolator();
+        private Interpolator mInterpolator = mFocusOutInterpolator;
         private final ColorOverlayDimmer mDimmer;
 
         void animateFocus(boolean select, boolean immediate) {
             endAnimation();
             final float end = select ? 1 : 0;
+            mInterpolator = select ? mFocusInInterpolator : mFocusOutInterpolator;
             if (immediate) {
                 setFocusLevel(end);
             } else if (mFocusLevel != end) {
@@ -144,7 +149,8 @@ public class FocusHighlightHelper {
     }
 
     static class BrowseItemFocusHighlight implements FocusHighlightHandler {
-        private static final int DURATION_MS = 150;
+        // MOD: a bit longer so the overshoot reads as a spring (original: 150)
+        private static final int DURATION_MS = 260;
 
         private int mScaleIndex;
         private final boolean mUseDimmer;

@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import com.liskovsoft.smartyoutubetv2.tv.ui.widgets.SkeletonView;
 
 import androidx.core.content.ContextCompat;
 import androidx.leanback.app.BrowseFragment;
@@ -31,6 +32,7 @@ public final class ProgressBarManager {
     boolean mUserProvidedProgressBar;
     boolean mIsShowing;
     private int mPosition = Gravity.CENTER;
+    private SkeletonCondition mSkeletonCondition;
 
     private final Runnable showRunnable = new Runnable() {
         @Override
@@ -41,7 +43,9 @@ public final class ProgressBarManager {
 
             if (mIsShowing) {
                 if (mProgressBarView == null) {
-                    mProgressBarView = createProgressBar(rootView, mPosition);
+                    // MOD: placeholder cards instead of a spinner while the screen is still empty
+                    mProgressBarView = mSkeletonCondition != null && mSkeletonCondition.useSkeleton() ?
+                            createSkeleton(rootView) : createProgressBar(rootView, mPosition);
                 } else if (mUserProvidedProgressBar) {
                     mProgressBarView.setVisibility(View.VISIBLE);
                 }
@@ -60,6 +64,26 @@ public final class ProgressBarManager {
             }
         }
     };
+
+    public interface SkeletonCondition {
+        boolean useSkeleton();
+    }
+
+    /**
+     * MOD: show placeholder cards (instead of the spinner) whenever the condition is true
+     */
+    public void setSkeletonCondition(SkeletonCondition condition) {
+        mSkeletonCondition = condition;
+    }
+
+    private static View createSkeleton(ViewGroup rootView) {
+        View skeleton = new SkeletonView(rootView.getContext());
+        rootView.addView(skeleton, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        skeleton.setAlpha(0f);
+        skeleton.animate().alpha(1f).setDuration(200).start();
+        return skeleton;
+    }
 
     private static View createProgressBar(ViewGroup rootView, int position) {
         ProgressBar progressBarView = new ProgressBar(

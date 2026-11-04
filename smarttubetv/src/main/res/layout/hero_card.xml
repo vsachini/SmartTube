@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MOD: featured card at the top of Home: big thumbnail, title, channel and a Play pill -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <FrameLayout
+        android:id="@+id/hero_frame"
+        android:layout_width="@dimen/hero_card_width"
+        android:layout_height="@dimen/hero_card_height"
+        android:background="@color/card_hero_placeholder">
+
+        <ImageView
+            android:id="@+id/hero_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:contentDescription="@null" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/hero_scrim" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:orientation="vertical"
+            android:padding="@dimen/hero_card_padding">
+
+            <TextView
+                android:id="@+id/hero_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:fontFamily="@font/lumen_display"
+                android:textStyle="bold"
+                android:textColor="@color/card_title_text_selected"
+                android:textSize="@dimen/hero_title_text_size" />
+
+            <TextView
+                android:id="@+id/hero_channel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:fontFamily="@font/lumen_sans"
+                android:textColor="@color/card_title_text"
+                android:textSize="@dimen/hero_channel_text_size" />
+
+            <TextView
+                android:id="@+id/hero_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/hero_play_pill"
+                android:fontFamily="@font/lumen_sans"
+                android:textStyle="bold"
+                android:paddingStart="18dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="7dp"
+                android:text="@string/hero_play"
+                android:textColor="@color/sidebar_item_focused_content"
+                android:textSize="@dimen/hero_play_text_size" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/hero_focus_ring"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/hero_focus_ring"
+            android:visibility="gone" />
+    </FrameLayout>
+</FrameLayout>

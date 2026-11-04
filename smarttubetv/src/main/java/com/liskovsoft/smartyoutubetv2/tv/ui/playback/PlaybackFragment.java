@@ -65,6 +65,12 @@ import com.liskovsoft.smartyoutubetv2.common.exoplayer.versions.selector.Restore
 import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerData;
 import com.liskovsoft.smartyoutubetv2.common.prefs.PlayerTweaksData;
+import android.os.Handler;
+import android.os.Looper;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.bumptech.glide.Glide;
+import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
 import com.liskovsoft.smartyoutubetv2.tv.adapter.VideoGroupObjectAdapter;
@@ -115,6 +121,17 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
     private SubtitleManager mSubtitleManager;
     private DebugInfoManager mDebugInfoManager;
     private UriBackgroundManager mBackgroundManager;
+    private static final long UP_NEXT_SHOW_MS = 15_000;
+    private static final long UP_NEXT_MIN_DURATION_MS = 30_000;
+    private Video mNextVideo;
+    private final Handler mUpNextHandler = new Handler(Looper.getMainLooper());
+    private final Runnable mUpNextTask = new Runnable() {
+        @Override
+        public void run() {
+            updateUpNextCard();
+            mUpNextHandler.postDelayed(this, 1_000);
+        }
+    };
     private RowsSupportFragment mRowsSupportFragment;
     private boolean mIsUIAnimationsEnabled = false;
     private boolean mIsEngineBlocked;
@@ -235,6 +252,9 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
 
         showHideWidgets(true); // PIP mode fix
         blockEngine(false); // reset bg mode
+
+        mUpNextHandler.removeCallbacks(mUpNextTask);
+        mUpNextHandler.post(mUpNextTask);
         //ExoPlayerInitializer.enableAudioFocus(mPlayer, true); // Restore focus after PIP
     }
 
@@ -250,6 +270,7 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
         }
 
         showHideWidgets(false); // PIP mode fix
+        mUpNextHandler.removeCallbacks(mUpNextTask);
         //ExoPlayerInitializer.enableAudioFocus(mPlayer, false); // Disable focus in PIP
     }
 
@@ -1327,6 +1348,50 @@ public class PlaybackFragment extends SeekModePlaybackFragment implements Playba
     public void setNextTitle(Video nextVideo) {
         if (mPlayerGlue != null) {
             mPlayerGlue.setNextTitle(createNextTitle(nextVideo));
+        }
+
+        bindUpNextCard(nextVideo);
+    }
+
+    /**
+     * MOD: "Up next" card in the bottom right corner
+     */
+    private void bindUpNextCard(Video nextVideo) {
+        mNextVideo = nextVideo;
+
+        if (getView() == null || nextVideo == null) {
+            return;
+        }
+
+        ((TextView) getView().findViewById(R.id.up_next_title)).setText(nextVideo.getTitle());
+        ((TextView) getView().findViewById(R.id.up_next_channel)).setText(nextVideo.getAuthor());
+
+        ImageView image = getView().findViewById(R.id.up_next_image);
+        ViewUtil.setRoundedCorners(image, getResources().getDimension(R.dimen.card_corner_radius));
+
+        if (Utils.checkActivity(getActivity())) {
+            Glide.with(this).load(nextVideo.cardImageUrl).apply(ViewUtil.glideOptions()).into(image);
+        }
+    }
+
+    private void updateUpNextCard() {
+        View card = getView() != null ? getView().findViewById(R.id.up_next_card) : null;
+
+        if (card == null) {
+            return;
+        }
+
+        long durationMs = getDurationMs();
+        long remainingMs = durationMs - getPositionMs();
+        boolean show = mNextVideo != null && durationMs > UP_NEXT_MIN_DURATION_MS &&
+                remainingMs > 0 && remainingMs <= UP_NEXT_SHOW_MS && !isOverlayShown();
+
+        if (show && card.getVisibility() != View.VISIBLE) {
+            card.setAlpha(0f);
+            card.setVisibility(View.VISIBLE);
+            card.animate().alpha(1f).setDuration(300).start();
+        } else if (!show && card.getVisibility() == View.VISIBLE) {
+            card.setVisibility(View.GONE);
         }
     }
 

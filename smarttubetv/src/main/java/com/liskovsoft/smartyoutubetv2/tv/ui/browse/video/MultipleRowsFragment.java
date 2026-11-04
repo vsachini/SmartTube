@@ -23,8 +23,10 @@ import com.liskovsoft.smartyoutubetv2.common.app.models.data.VideoGroup;
 import com.liskovsoft.smartyoutubetv2.common.app.presenters.interfaces.VideoGroupPresenter;
 import com.liskovsoft.smartyoutubetv2.common.prefs.MainUIData;
 import com.liskovsoft.smartyoutubetv2.tv.adapter.VideoGroupObjectAdapter;
+import com.liskovsoft.mediaserviceinterfaces.data.MediaGroup;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.ChannelHeaderPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.ChannelHeaderPresenter.ChannelHeaderCallback;
+import com.liskovsoft.smartyoutubetv2.tv.presenter.HeroCardPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.ShortsCardPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.VideoCardPresenter;
 import com.liskovsoft.smartyoutubetv2.tv.presenter.CustomListRowPresenter;
@@ -50,6 +52,7 @@ public abstract class MultipleRowsFragment extends RowsSupportFragment implement
     private VideoGroupPresenter mMainPresenter;
     private VideoCardPresenter mCardPresenter;
     private ShortsCardPresenter mShortsPresenter;
+    private HeroCardPresenter mHeroPresenter;
     private int mSelectedRowIndex = -1;
     private ChannelHeaderCallback mChannelHeaderCallback;
 
@@ -60,6 +63,7 @@ public abstract class MultipleRowsFragment extends RowsSupportFragment implement
         mMainPresenter = getMainPresenter();
         mCardPresenter = new VideoCardPresenter();
         mShortsPresenter = new ShortsCardPresenter();
+        mHeroPresenter = new HeroCardPresenter();
         mBackgroundManager = ((LeanbackActivity) getActivity()).getBackgroundManager();
 
         setupAdapter();
@@ -107,6 +111,7 @@ public abstract class MultipleRowsFragment extends RowsSupportFragment implement
         setOnItemViewSelectedListener(new ItemViewSelectedListener());
         mCardPresenter.setOnItemViewLongPressedListener(new ItemViewLongPressedListener());
         mShortsPresenter.setOnItemViewLongPressedListener(new ItemViewLongPressedListener());
+        mHeroPresenter.setOnItemViewLongPressedListener(new ItemViewLongPressedListener());
     }
 
     @Override
@@ -194,6 +199,10 @@ public abstract class MultipleRowsFragment extends RowsSupportFragment implement
         return false;
     }
 
+    protected int getRowCount() {
+        return mRowsAdapter != null ? mRowsAdapter.size() : 0;
+    }
+
     @Override
     public boolean isEmpty() {
         if (mRowsAdapter == null) {
@@ -253,7 +262,8 @@ public abstract class MultipleRowsFragment extends RowsSupportFragment implement
             HeaderItem rowHeader = new HeaderItem(group.getTitle());
             int videoGroupId = group.getId(); // Create unique int from category.
 
-            VideoGroupObjectAdapter videoGroupAdapter = new VideoGroupObjectAdapter(group, group.isShorts() ? mShortsPresenter : mCardPresenter);
+            VideoGroupObjectAdapter videoGroupAdapter = new VideoGroupObjectAdapter(group,
+                    isHeroRow(group) ? mHeroPresenter : group.isShorts() ? mShortsPresenter : mCardPresenter);
 
             mVideoGroupAdapters.put(videoGroupId, videoGroupAdapter);
 
@@ -347,6 +357,14 @@ public abstract class MultipleRowsFragment extends RowsSupportFragment implement
                 Toast.makeText(getActivity(), item.toString(), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    /**
+     * The first Home row shows featured (big) cards
+     */
+    private boolean isHeroRow(VideoGroup group) {
+        return !group.isShorts() && mRowsAdapter.size() == 0 && group.getPosition() <= 0 &&
+                group.getSection() != null && group.getSection().getId() == MediaGroup.TYPE_HOME;
     }
 
     private final class ItemViewSelectedListener implements OnItemViewSelectedListener {

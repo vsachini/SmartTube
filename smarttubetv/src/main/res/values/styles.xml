@@ -28,6 +28,8 @@
 
     <!-- Color scheme: Teal (Default) -->
     <style name="App.Theme.Leanback.Player" parent="Theme.Leanback">
+        <!-- MOD: Lumen TV default font -->
+        <item name="android:fontFamily">@font/lumen_sans</item>
         <!-- <item name="android:windowBackground">@null</item> -->
         <!-- NOTE: don't use transparency because the BackgroundManager won't work (BackgroundManager:778) -->
         <item name="android:windowBackground">@android:color/black</item>
@@ -49,6 +51,10 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
     <style name="App.Theme.Leanback.Browse" parent="Theme.Leanback.Browse">
+        <!-- MOD: Lumen TV default font -->
+        <item name="android:fontFamily">@font/lumen_sans</item>
+        <!-- MOD: stronger elevation shadows so the coloured card glow reads as light -->
+        <item name="android:ambientShadowAlpha" tools:targetApi="21">1.0</item>
         <item name="android:windowBackground">@color/shelf_background_dark</item>
         <item name="brandColor">@color/fastlane_background_dark</item>
         <item name="brandAccentColor">@color/fastlane_background</item>
@@ -72,6 +78,8 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
     <style name="App.Theme.Leanback.GuidedStep" parent="Theme.Leanback.GuidedStep">
+        <!-- MOD: Lumen TV default font -->
+        <item name="android:fontFamily">@font/lumen_sans</item>
         <item name="android:windowBackground">@color/shelf_background_dark</item>
         <item name="shelfBackground">@color/shelf_background_dark</item>
         <!-- Disable activity transition animations -->
@@ -83,6 +91,8 @@
     </style>
     <!-- AppDialogFragment style -->
     <style name="App.Theme.Leanback.Preferences.Base" parent="Theme.Leanback">
+        <!-- MOD: Lumen TV default font -->
+        <item name="android:fontFamily">@font/lumen_sans</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Leanback</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

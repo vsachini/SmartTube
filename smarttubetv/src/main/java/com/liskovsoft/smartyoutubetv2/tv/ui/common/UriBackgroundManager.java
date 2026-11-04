@@ -2,7 +2,10 @@ package com.liskovsoft.smartyoutubetv2.tv.ui.common;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -16,7 +19,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.liskovsoft.sharedutils.helpers.Helpers;
 import com.liskovsoft.smartyoutubetv2.common.app.models.data.Video;
+import com.liskovsoft.smartyoutubetv2.common.utils.Utils;
 import com.liskovsoft.smartyoutubetv2.tv.R;
+import com.liskovsoft.smartyoutubetv2.tv.ui.playback.PlaybackActivity;
 import com.liskovsoft.smartyoutubetv2.tv.util.ViewUtil;
 
 public class UriBackgroundManager {
@@ -30,6 +35,13 @@ public class UriBackgroundManager {
     private final Activity mActivity;
     private final Handler mHandler;
     private int mBackgroundColor = -1;
+    private static final int AMBIENT_UPDATE_DELAY_MS = 400;
+    private static final int AMBIENT_WIDTH = 96;
+    private static final int AMBIENT_HEIGHT = 54;
+    private static final int AMBIENT_BLUR_RADIUS = 6;
+    private String mAmbientUrl;
+    private Drawable mAmbientDrawable;
+    private final Runnable mAmbientTask = () -> loadAmbientBackground(mAmbientUrl);
 
     public UriBackgroundManager(Activity activity) {
         mActivity = activity;
@@ -59,12 +71,56 @@ public class UriBackgroundManager {
         }
     }
 
+    /**
+     * MOD: ambient backdrop. A blurred, darkened copy of the focused thumbnail fades in behind the content.
+     */
     public void setBackgroundFrom(Video item) {
-        // Selectively change background picture
+        // The player keeps its plain background
+        if (item == null || item.cardImageUrl == null || mActivity instanceof PlaybackActivity) {
+            return;
+        }
+
+        if (item.cardImageUrl.equals(mAmbientUrl)) {
+            return;
+        }
+
+        mAmbientUrl = item.cardImageUrl;
+        mHandler.removeCallbacks(mAmbientTask);
+        mHandler.postDelayed(mAmbientTask, AMBIENT_UPDATE_DELAY_MS);
+    }
+
+    private void loadAmbientBackground(String url) {
+        if (mBackgroundManager == null || !Utils.checkActivity(mActivity)) {
+            return;
+        }
+
+        Glide.with(mActivity)
+                .asBitmap()
+                .load(url)
+                .apply(ViewUtil.glideOptions().centerCrop())
+                .into(new SimpleTarget<Bitmap>(AMBIENT_WIDTH, AMBIENT_HEIGHT) {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, Transition<? super Bitmap> transition) {
+                        // Skip if focus already moved on
+                        if (mBackgroundManager == null || !url.equals(mAmbientUrl)) {
+                            return;
+                        }
+
+                        Bitmap blurred = AmbientBlur.blur(resource, AMBIENT_BLUR_RADIUS);
+                        BitmapDrawable image = new BitmapDrawable(mActivity.getResources(), blurred);
+                        image.setFilterBitmap(true); // smooth upscaling of the small blurred image
+                        mAmbientDrawable = new LayerDrawable(new Drawable[] {
+                                image, new ColorDrawable(ContextCompat.getColor(mActivity, R.color.ambient_scrim))
+                        });
+                        mBackgroundManager.setDrawable(mAmbientDrawable);
+                    }
+                });
     }
 
     public void onStart() {
-        if (mBackgroundURI != null) {
+        if (mAmbientDrawable != null) {
+            mBackgroundManager.setDrawable(mAmbientDrawable);
+        } else if (mBackgroundURI != null) {
             showBackground(mBackgroundURI.toString());
         } else if (mBackgroundColor != -1) {
             setBackgroundColor(mBackgroundColor);
@@ -79,6 +135,7 @@ public class UriBackgroundManager {
 
     public void onDestroy() {
         mHandler.removeCallbacks(mBackgroundTask);
+        mHandler.removeCallbacks(mAmbientTask);
         mBackgroundManager = null;
     }
 

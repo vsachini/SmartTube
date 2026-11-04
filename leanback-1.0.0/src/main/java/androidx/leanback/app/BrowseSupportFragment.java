@@ -19,6 +19,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -1469,6 +1472,18 @@ public class BrowseSupportFragment extends BaseSupportFragment {
     }
 
     /**
+     * MOD: frosted glass. The content behind the open (translucent) sidebar is blurred. Needs API 31.
+     */
+    private void blurContent(boolean blur) {
+        if (!isRailEnabled() || Build.VERSION.SDK_INT < 31 || mScaleFrameLayout == null) {
+            return;
+        }
+
+        float radius = mScaleFrameLayout.getResources().getDimension(R.dimen.lb_browse_rail_blur_radius);
+        mScaleFrameLayout.setRenderEffect(blur ? RenderEffect.createBlurEffect(radius, radius, Shader.TileMode.CLAMP) : null);
+    }
+
+    /**
      * MOD: sidebar collapses to an icon rail instead of hiding.
      * The expanded sidebar overlays the content instead of pushing it.
      */
@@ -1479,6 +1494,7 @@ public class BrowseSupportFragment extends BaseSupportFragment {
     void showHeaders(boolean show) {
         if (DEBUG) Log.v(TAG, "showHeaders " + show);
         mHeadersSupportFragment.setHeadersEnabled(show);
+        blurContent(show);
         setHeadersOnScreen(show);
         expandMainFragment(!show);
     }

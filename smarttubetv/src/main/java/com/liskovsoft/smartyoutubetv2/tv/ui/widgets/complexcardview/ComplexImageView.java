@@ -37,6 +37,8 @@ public class ComplexImageView extends RelativeLayout {
     private View mFocusRing;
     private float mCornerRadius;
     private float mBadgeCornerRadius;
+    private float mGlowElevation;
+    private int mGlowColor = Color.WHITE;
     private int mPreviewWidth;
     private int mPreviewHeight;
     private Runnable mCreateAndStartPlayer;
@@ -69,6 +71,7 @@ public class ComplexImageView extends RelativeLayout {
         mFocusRing = findViewById(R.id.focus_ring);
         mCornerRadius = getResources().getDimension(R.dimen.card_corner_radius);
         mBadgeCornerRadius = getResources().getDimension(R.dimen.card_badge_corner_radius);
+        mGlowElevation = getResources().getDimension(R.dimen.card_glow_elevation);
 
         enableRoundedCorners();
     }
@@ -96,6 +99,27 @@ public class ComplexImageView extends RelativeLayout {
         }
 
         mFocusRing.setVisibility(visible ? View.VISIBLE : View.GONE);
+        updateGlow(visible);
+    }
+
+    /**
+     * Colour of the soft light under the focused thumbnail (taken from the thumbnail)
+     */
+    public void setGlowColor(int color) {
+        mGlowColor = color;
+        updateGlow(mFocusRing != null && mFocusRing.getVisibility() == View.VISIBLE);
+    }
+
+    private void updateGlow(boolean focused) {
+        // Coloured elevation shadows need API 28
+        if (Build.VERSION.SDK_INT < 28) {
+            return;
+        }
+
+        // Ambient shadow spreads evenly around the outline (a halo); the spot shadow would fall downwards
+        setOutlineAmbientShadowColor(mGlowColor);
+        setOutlineSpotShadowColor(Color.TRANSPARENT);
+        setElevation(focused ? mGlowElevation : 0);
     }
 
     /**

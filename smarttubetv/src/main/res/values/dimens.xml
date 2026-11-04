@@ -11,6 +11,33 @@
     <dimen name="card_corner_radius">8dp</dimen>
     <dimen name="card_focus_ring_width">3dp</dimen>
     <dimen name="card_badge_corner_radius">4dp</dimen>
+    <!-- Height of the coloured glow under the focused card -->
+    <dimen name="card_glow_elevation">24dp</dimen>
+
+    <!-- Player seek bar: thin while playing, thick with a glowing knob while seeking -->
+    <dimen name="lb_playback_transport_progressbar_bar_height">3dp</dimen>
+    <dimen name="lb_playback_transport_progressbar_active_bar_height">8dp</dimen>
+    <dimen name="lb_playback_transport_progressbar_active_radius">9dp</dimen>
+    <dimen name="seek_bar_knob_glow_radius">12dp</dimen>
+
+    <!-- Loading placeholders: line up with the first content row -->
+    <dimen name="skeleton_start">128dp</dimen>
+    <dimen name="skeleton_top">112dp</dimen>
+
+    <!-- Player "Up next" card -->
+    <dimen name="up_next_card_width">400dp</dimen>
+    <dimen name="up_next_card_margin">40dp</dimen>
+    <dimen name="up_next_thumb_width">128dp</dimen>
+    <dimen name="up_next_thumb_height">72dp</dimen>
+
+    <!-- Featured cards at the top of Home -->
+    <dimen name="hero_card_width">560dp</dimen>
+    <dimen name="hero_card_height">315dp</dimen>
+    <dimen name="hero_card_corner_radius">16dp</dimen>
+    <dimen name="hero_card_padding">24dp</dimen>
+    <dimen name="hero_title_text_size">26sp</dimen>
+    <dimen name="hero_channel_text_size">15sp</dimen>
+    <dimen name="hero_play_text_size">14sp</dimen>
 
     <dimen name="shorts_card_width">120dp</dimen>
     <dimen name="shorts_card_height">200dp</dimen>
